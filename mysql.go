@@ -21,7 +21,7 @@ type MySqlStarter struct {
 }
 
 func (d *MySqlStarter) Init(ctx infra.StarterContext) {
-	config := ctx.Yaml().OtherConfig["DefaultPrefix"].(*mysql.MySqlConfig)
+	config := ctx.Yaml().OtherConfig[mysql.DefaultPrefix].(*mysql.MySqlConfig)
 	var err error
 	// user:password@tcp(127.0.0.1:3306)/test
 	db, err = sql.Open(config.DriverName, fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", config.Username, config.Password, config.IpAddr, config.Port, config.Database))

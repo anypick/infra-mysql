@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+	"github.com/anypick/infra/base/props/container"
 	"github.com/anypick/infra/utils/common"
 	"reflect"
 	"time"
@@ -9,6 +11,11 @@ import (
 const (
 	DefaultPrefix = "mysql"
 )
+
+
+func init() {
+	container.RegisterYamContainer(&MySqlConfig{Prefix: DefaultPrefix})
+}
 
 // mysql连接配置
 type MySqlConfig struct {
@@ -22,6 +29,18 @@ type MySqlConfig struct {
 	MaxOpenConn     int           `yaml:"maxOpenConn"`     // 最大连接数
 	MaxIdeConn      int           `yaml:"maxIdeConn"`      // 最大等待连接
 	ConnMaxLifetime time.Duration `yaml:"connMaxLifetime"` // 连接最大存活时间
+}
+
+func (m *MySqlConfig) ConfigAdd(config map[interface{}]interface{}) {
+	m.DriverName = config["driverName"].(string)
+	m.IpAddr = config["ipAddr"].(string)
+	m.Port = fmt.Sprintf("%v", config["port"])
+	m.Username = config["username"].(string)
+	m.Password = config["password"].(string)
+	m.Database = config["database"].(string)
+	m.MaxOpenConn = config["maxOpenConn"].(int)
+	m.MaxIdeConn = config["maxIdeConn"].(int)
+	m.ConnMaxLifetime = time.Duration(config["connMaxLifetime"].(int))
 }
 
 func (m MySqlConfig) GetStringByDefault(fieldName, defaultValue string) string {
